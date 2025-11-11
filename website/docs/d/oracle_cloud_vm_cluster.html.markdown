@@ -67,8 +67,6 @@ In addition to the Arguments listed above - the following Attributes are exporte
 
 * `domain` - The domain name for the Cloud VM Cluster.
 
-* `file_system_configuration` - A `file_system_configuration` block as defined below.
-
 * `gi_version` - A valid Oracle Grid Infrastructure (GI) software version.
 
 * `hostname` - The hostname for the Cloud VM Cluster without suffix.
@@ -174,14 +172,6 @@ A `iorm_config_cache` block exports the following:
 
 * `objective` - The current value for the IORM objective. The default is `AUTO`.
 
----
-
-A `file_system_configuration` block exports the following:
-
-* `mount_point` - The mount path of the file system.
-
-* `size_in_gb` - The size of the virtual machine's file system.
-
 ## Timeouts
 
 The `timeouts` block allows you to specify [timeouts](https://www.terraform.io/language/resources/syntax#operation-timeouts) for certain actions:
@@ -192,4 +182,4 @@ The `timeouts` block allows you to specify [timeouts](https://www.terraform.io/l
 <!-- This section is generated, changes will be overwritten -->
 This data source uses the following Azure API Providers:
 
-* `Oracle.Database` - 2025-03-01
+* `Oracle.Database`: 2025-03-01

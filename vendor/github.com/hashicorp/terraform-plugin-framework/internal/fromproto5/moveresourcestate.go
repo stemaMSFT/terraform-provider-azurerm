@@ -5,6 +5,7 @@ package fromproto5
 
 import (
 	"context"
+
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/internal/fwschema"
 	"github.com/hashicorp/terraform-plugin-framework/internal/fwserver"
@@ -16,7 +17,7 @@ import (
 
 // MoveResourceStateRequest returns the *fwserver.MoveResourceStateRequest
 // equivalent of a *tfprotov5.MoveResourceStateRequest.
-func MoveResourceStateRequest(ctx context.Context, proto5 *tfprotov5.MoveResourceStateRequest, resource resource.Resource, resourceSchema fwschema.Schema, identitySchema fwschema.Schema) (*fwserver.MoveResourceStateRequest, diag.Diagnostics) {
+func MoveResourceStateRequest(ctx context.Context, proto5 *tfprotov5.MoveResourceStateRequest, resource resource.Resource, resourceSchema fwschema.Schema) (*fwserver.MoveResourceStateRequest, diag.Diagnostics) {
 	if proto5 == nil {
 		return nil, nil
 	}
@@ -37,16 +38,13 @@ func MoveResourceStateRequest(ctx context.Context, proto5 *tfprotov5.MoveResourc
 	}
 
 	fw := &fwserver.MoveResourceStateRequest{
-		SourceProviderAddress:       proto5.SourceProviderAddress,
-		SourceRawState:              (*tfprotov6.RawState)(proto5.SourceState),
-		SourceSchemaVersion:         proto5.SourceSchemaVersion,
-		SourceTypeName:              proto5.SourceTypeName,
-		TargetResource:              resource,
-		TargetResourceSchema:        resourceSchema,
-		TargetTypeName:              proto5.TargetTypeName,
-		SourceIdentity:              (*tfprotov6.RawState)(proto5.SourceIdentity),
-		SourceIdentitySchemaVersion: proto5.SourceIdentitySchemaVersion,
-		IdentitySchema:              identitySchema,
+		SourceProviderAddress: proto5.SourceProviderAddress,
+		SourceRawState:        (*tfprotov6.RawState)(proto5.SourceState),
+		SourceSchemaVersion:   proto5.SourceSchemaVersion,
+		SourceTypeName:        proto5.SourceTypeName,
+		TargetResource:        resource,
+		TargetResourceSchema:  resourceSchema,
+		TargetTypeName:        proto5.TargetTypeName,
 	}
 
 	sourcePrivate, sourcePrivateDiags := privatestate.NewData(ctx, proto5.SourcePrivate)

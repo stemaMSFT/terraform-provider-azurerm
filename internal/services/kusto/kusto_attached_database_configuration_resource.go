@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/go-azure-helpers/lang/pointer"
 	"github.com/hashicorp/go-azure-helpers/lang/response"
 	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonids"
 	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonschema"
@@ -199,7 +198,7 @@ func resourceKustoAttachedDatabaseConfigurationCreateUpdate(d *pluginsdk.Resourc
 
 	configurationProperties := expandKustoAttachedDatabaseConfigurationProperties(d)
 	configurationRequest := attacheddatabaseconfigurations.AttachedDatabaseConfiguration{
-		Location:   pointer.To(location.Normalize(d.Get("location").(string))),
+		Location:   utils.String(location.Normalize(d.Get("location").(string))),
 		Properties: configurationProperties,
 	}
 
@@ -224,7 +223,7 @@ func resourceKustoAttachedDatabaseConfigurationRead(d *pluginsdk.ResourceData, m
 
 	resp, err := client.Get(ctx, *id)
 	if err != nil {
-		if response.WasNotFound(resp.HttpResponse) {
+		if !response.WasNotFound(resp.HttpResponse) {
 			d.SetId("")
 			return nil
 		}

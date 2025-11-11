@@ -171,7 +171,7 @@ func resourceArmDevTestVirtualNetworkCreate(d *pluginsdk.ResourceData, meta inte
 
 	parameters := virtualnetworks.VirtualNetwork{
 		Tags: tags.Expand(d.Get("tags").(map[string]interface{})),
-		Properties: virtualnetworks.VirtualNetworkProperties{
+		Properties: &virtualnetworks.VirtualNetworkProperties{
 			Description:     pointer.To(description),
 			SubnetOverrides: subnets,
 		},
@@ -212,16 +212,17 @@ func resourceArmDevTestVirtualNetworkRead(d *pluginsdk.ResourceData, meta interf
 	d.Set("resource_group_name", id.ResourceGroupName)
 
 	if model := read.Model; model != nil {
-		props := model.Properties
-		d.Set("description", props.Description)
+		if props := model.Properties; props != nil {
+			d.Set("description", props.Description)
 
-		flattenedSubnets := flattenDevTestVirtualNetworkSubnets(props.SubnetOverrides)
-		if err := d.Set("subnet", flattenedSubnets); err != nil {
-			return fmt.Errorf("setting `subnet`: %+v", err)
+			flattenedSubnets := flattenDevTestVirtualNetworkSubnets(props.SubnetOverrides)
+			if err := d.Set("subnet", flattenedSubnets); err != nil {
+				return fmt.Errorf("setting `subnet`: %+v", err)
+			}
+
+			// Computed fields
+			d.Set("unique_identifier", props.UniqueIdentifier)
 		}
-
-		// Computed fields
-		d.Set("unique_identifier", props.UniqueIdentifier)
 
 		if err = tags.FlattenAndSet(d, model.Tags); err != nil {
 			return err
@@ -249,6 +250,10 @@ func resourceArmDevTestVirtualNetworkUpdate(d *pluginsdk.ResourceData, meta inte
 
 	if existing.Model == nil {
 		return fmt.Errorf("retrieving %s: `model` was nil", id)
+	}
+
+	if existing.Model.Properties == nil {
+		return fmt.Errorf("retrieving %s: `properties` was nil", id)
 	}
 
 	payload := existing.Model

@@ -1534,9 +1534,8 @@ func startTaskSchema() map[string]*pluginsdk.Schema {
 		},
 
 		"task_retry_maximum": {
-			Type:         pluginsdk.TypeInt,
-			Optional:     true,
-			ValidateFunc: validation.IntAtLeast(-1),
+			Type:     pluginsdk.TypeInt,
+			Optional: true,
 		},
 
 		"wait_for_success": {

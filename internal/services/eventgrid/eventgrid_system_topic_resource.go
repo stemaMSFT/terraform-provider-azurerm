@@ -19,7 +19,6 @@ import (
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/azure"
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/tf"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/clients"
-	"github.com/hashicorp/terraform-provider-azurerm/internal/features"
 	mgmtGroupValidate "github.com/hashicorp/terraform-provider-azurerm/internal/services/managementgroup/validate"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/tf/pluginsdk"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/tf/validation"
@@ -27,7 +26,7 @@ import (
 )
 
 func resourceEventGridSystemTopic() *pluginsdk.Resource {
-	resource := &pluginsdk.Resource{
+	return &pluginsdk.Resource{
 		Create: resourceEventGridSystemTopicCreateUpdate,
 		Read:   resourceEventGridSystemTopicRead,
 		Update: resourceEventGridSystemTopicCreateUpdate,
@@ -63,9 +62,10 @@ func resourceEventGridSystemTopic() *pluginsdk.Resource {
 
 			"resource_group_name": commonschema.ResourceGroupName(),
 
-			"identity": commonschema.SystemAssignedUserAssignedIdentityOptional(),
+			"identity": commonschema.SystemOrUserAssignedIdentityOptional(),
 
-			"source_resource_id": {
+			// TODO: remove `_arm` in 4.0. Can we be more descriptive about /what/ this is?
+			"source_arm_resource_id": {
 				Type:     pluginsdk.TypeString,
 				Required: true,
 				ForceNew: true,
@@ -82,7 +82,8 @@ func resourceEventGridSystemTopic() *pluginsdk.Resource {
 				ValidateFunc: validation.StringIsNotEmpty,
 			},
 
-			"metric_resource_id": {
+			// TODO: remove `_arm` in 4.0. Can we be more descriptive about /what/ this is?
+			"metric_arm_resource_id": {
 				Type:     pluginsdk.TypeString,
 				Computed: true,
 			},
@@ -90,38 +91,6 @@ func resourceEventGridSystemTopic() *pluginsdk.Resource {
 			"tags": commonschema.Tags(),
 		},
 	}
-
-	if !features.FivePointOh() {
-		resource.Schema["source_arm_resource_id"] = &pluginsdk.Schema{
-			Type:          pluginsdk.TypeString,
-			Optional:      true,
-			Computed:      true,
-			ForceNew:      true,
-			ConflictsWith: []string{"source_resource_id"},
-			Deprecated:    "the `source_arm_resource_id` property has been deprecated in favour of `source_resource_id` and will be removed in version 5.0 of the Provider.",
-			ValidateFunc: validation.Any(
-				azure.ValidateResourceID,
-				mgmtGroupValidate.TenantScopedManagementGroupID,
-			),
-		}
-		resource.Schema["source_resource_id"] = &pluginsdk.Schema{
-			Type:          pluginsdk.TypeString,
-			Optional:      true,
-			Computed:      true,
-			ForceNew:      true,
-			ConflictsWith: []string{"source_arm_resource_id"},
-			ValidateFunc: validation.Any(
-				azure.ValidateResourceID,
-				mgmtGroupValidate.TenantScopedManagementGroupID,
-			),
-		}
-		resource.Schema["metric_arm_resource_id"] = &pluginsdk.Schema{
-			Type:     pluginsdk.TypeString,
-			Computed: true,
-		}
-	}
-
-	return resource
 }
 
 func resourceEventGridSystemTopicCreateUpdate(d *pluginsdk.ResourceData, meta interface{}) error {
@@ -147,24 +116,19 @@ func resourceEventGridSystemTopicCreateUpdate(d *pluginsdk.ResourceData, meta in
 	systemTopic := systemtopics.SystemTopic{
 		Location: location.Normalize(d.Get("location").(string)),
 		Properties: &systemtopics.SystemTopicProperties{
-			Source:    pointer.To(d.Get("source_resource_id").(string)),
+			Source:    pointer.To(d.Get("source_arm_resource_id").(string)),
 			TopicType: pointer.To(d.Get("topic_type").(string)),
 		},
 		Tags: tags.Expand(d.Get("tags").(map[string]interface{})),
 	}
 
-	if !features.FivePointOh() {
-		if v, ok := d.GetOk("source_arm_resource_id"); ok {
-			systemTopic.Properties.Source = pointer.To(v.(string))
-		}
-	}
-
 	if v, ok := d.GetOk("identity"); ok {
-		expandedIdentity, err := identity.ExpandSystemAndUserAssignedMap(v.([]interface{}))
+		identityRaw := v.([]interface{})
+		identity, err := identity.ExpandSystemAndUserAssignedMap(identityRaw)
 		if err != nil {
 			return fmt.Errorf("expanding `identity`: %+v", err)
 		}
-		systemTopic.Identity = expandedIdentity
+		systemTopic.Identity = identity
 	}
 
 	if err := client.CreateOrUpdateThenPoll(ctx, id, systemTopic); err != nil {
@@ -203,13 +167,9 @@ func resourceEventGridSystemTopicRead(d *pluginsdk.ResourceData, meta interface{
 		d.Set("location", location.Normalize(model.Location))
 
 		if props := model.Properties; props != nil {
-			d.Set("metric_resource_id", props.MetricResourceId)
-			d.Set("source_resource_id", props.Source)
+			d.Set("metric_arm_resource_id", props.MetricResourceId)
+			d.Set("source_arm_resource_id", props.Source)
 			d.Set("topic_type", props.TopicType)
-			if !features.FivePointOh() {
-				d.Set("source_arm_resource_id", props.Source)
-				d.Set("metric_arm_resource_id", props.MetricResourceId)
-			}
 		}
 
 		flattenedIdentity, err := identity.FlattenSystemAndUserAssignedMap(model.Identity)

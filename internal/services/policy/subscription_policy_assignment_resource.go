@@ -4,8 +4,6 @@
 package policy
 
 import (
-	"regexp"
-
 	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonids"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/sdk"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/policy/validate"
@@ -27,9 +25,7 @@ func (r SubscriptionAssignmentResource) Arguments() map[string]*pluginsdk.Schema
 			ForceNew: true,
 			ValidateFunc: validation.All(
 				validation.StringIsNotWhiteSpace,
-				validation.StringDoesNotContainAny("#<>%&:\\?/"),
-				validation.StringLenBetween(1, 64),
-				validation.StringMatch(regexp.MustCompile("[^ .]$"), "The name cannot end with a period or space."),
+				validation.StringDoesNotContainAny("/"),
 			),
 		},
 		"subscription_id": {

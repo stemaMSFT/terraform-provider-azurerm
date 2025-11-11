@@ -36,19 +36,11 @@ func (s *Server) MoveResourceState(ctx context.Context, proto5Req *tfprotov5.Mov
 
 	fwResp.Diagnostics.Append(diags...)
 
-	identitySchema, diags := s.FrameworkServer.ResourceIdentitySchema(ctx, proto5Req.TargetTypeName)
-
-	fwResp.Diagnostics.Append(diags...)
-
 	if fwResp.Diagnostics.HasError() {
 		return toproto5.MoveResourceStateResponse(ctx, fwResp), nil
 	}
 
-	if fwResp.Diagnostics.HasError() {
-		return toproto5.MoveResourceStateResponse(ctx, fwResp), nil
-	}
-
-	fwReq, diags := fromproto5.MoveResourceStateRequest(ctx, proto5Req, resource, resourceSchema, identitySchema)
+	fwReq, diags := fromproto5.MoveResourceStateRequest(ctx, proto5Req, resource, resourceSchema)
 
 	fwResp.Diagnostics.Append(diags...)
 

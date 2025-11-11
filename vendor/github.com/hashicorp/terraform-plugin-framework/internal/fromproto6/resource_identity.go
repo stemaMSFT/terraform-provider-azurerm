@@ -13,7 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 )
 
-// ResourceIdentity returns the *tfsdk.ResourceIdentity for a *tfprotov6.ResourceIdentityData and fwschema.Schema.
+// TODO:ResourceIdentity: Should we create a wrapping struct to contain the identity data? To match the protocol (in-case we want to introduce other identity things)
+// - Need to think more on this (like what if we want to introduce display-only attributes)
+// - If we introduce one, add a test as well.
 func ResourceIdentity(ctx context.Context, in *tfprotov6.ResourceIdentityData, schema fwschema.Schema) (*tfsdk.ResourceIdentity, diag.Diagnostics) {
 	if in == nil {
 		return nil, nil

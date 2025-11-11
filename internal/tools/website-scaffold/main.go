@@ -594,7 +594,7 @@ func (gen documentationGenerator) buildDescriptionForArgument(name string, field
 	}
 
 	if name == "enabled" || strings.HasSuffix(name, "_enabled") {
-		return "Whether to enable the TODO."
+		return "Should the TODO be enabled?"
 	}
 
 	if strings.HasSuffix(name, "_id") {
@@ -650,7 +650,7 @@ func (gen documentationGenerator) buildDescriptionForAttribute(name string, fiel
 	}
 
 	if name == "enabled" || strings.HasSuffix(name, "_enabled") {
-		return "Whether the TODO is enabled."
+		return "Is the TODO enabled?"
 	}
 
 	if strings.HasSuffix(name, "_id") {

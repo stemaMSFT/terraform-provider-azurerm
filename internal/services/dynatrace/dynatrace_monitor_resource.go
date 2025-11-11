@@ -32,7 +32,6 @@ type MonitorsResourceModel struct {
 	MonitoringStatus              bool                           `tfschema:"monitoring_enabled"`
 	MarketplaceSubscriptionStatus string                         `tfschema:"marketplace_subscription"`
 	Identity                      []identity.ModelSystemAssigned `tfschema:"identity"`
-	EnvironmentProperties         []EnvironmentProperties        `tfschema:"environment_properties"`
 	PlanData                      []PlanData                     `tfschema:"plan"`
 	UserInfo                      []UserInfo                     `tfschema:"user"`
 	Tags                          map[string]string              `tfschema:"tags"`
@@ -168,27 +167,6 @@ func (r MonitorsResource) Arguments() map[string]*pluginsdk.Schema {
 			},
 		},
 
-		"environment_properties": {
-			Type:     pluginsdk.TypeList,
-			Optional: true,
-			Elem: &pluginsdk.Resource{
-				Schema: map[string]*pluginsdk.Schema{
-					"environment_info": {
-						Type:     pluginsdk.TypeList,
-						Required: true,
-						Elem: &pluginsdk.Resource{
-							Schema: map[string]*pluginsdk.Schema{
-								"environment_id": {
-									Type:     pluginsdk.TypeString,
-									Required: true,
-								},
-							},
-						},
-					},
-				},
-			},
-		},
-
 		"tags": tags.Schema(),
 	}
 }
@@ -232,11 +210,10 @@ func (r MonitorsResource) Create() sdk.ResourceFunc {
 				monitoringStatus = monitors.MonitoringStatusDisabled
 			}
 			monitorsProps := monitors.MonitorProperties{
-				MarketplaceSubscriptionStatus:  pointer.To(monitors.MarketplaceSubscriptionStatus(model.MarketplaceSubscriptionStatus)),
-				MonitoringStatus:               pointer.To(monitoringStatus),
-				PlanData:                       ExpandDynatracePlanData(model.PlanData),
-				UserInfo:                       ExpandDynatraceUserInfo(model.UserInfo),
-				DynatraceEnvironmentProperties: ExpandDynatraceEnvironmentProperties(model.EnvironmentProperties),
+				MarketplaceSubscriptionStatus: pointer.To(monitors.MarketplaceSubscriptionStatus(model.MarketplaceSubscriptionStatus)),
+				MonitoringStatus:              pointer.To(monitoringStatus),
+				PlanData:                      ExpandDynatracePlanData(model.PlanData),
+				UserInfo:                      ExpandDynatraceUserInfo(model.UserInfo),
 			}
 
 			dynatraceIdentity, err := expandDynatraceIdentity(model.Identity)
@@ -301,10 +278,6 @@ func (r MonitorsResource) Read() sdk.ResourceFunc {
 					Identity:                      identityProps,
 					PlanData:                      FlattenDynatracePlanData(props.PlanData),
 					UserInfo:                      FlattenDynatraceUserInfo(props.UserInfo),
-				}
-
-				if environmentProps := metadata.ResourceData.Get("environment_properties"); environmentProps != nil && len(environmentProps.([]interface{})) > 0 {
-					state.EnvironmentProperties = FlattenDynatraceEnvironmentProperties(props.DynatraceEnvironmentProperties)
 				}
 
 				if model.Tags != nil {

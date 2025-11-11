@@ -97,24 +97,24 @@ func parseCachingTypes(input string) (*CachingTypes, error) {
 	return &out, nil
 }
 
-type ComponentName string
+type ComponentNames string
 
 const (
-	ComponentNameMicrosoftNegativeWindowsNegativeShellNegativeSetup ComponentName = "Microsoft-Windows-Shell-Setup"
+	ComponentNamesMicrosoftNegativeWindowsNegativeShellNegativeSetup ComponentNames = "Microsoft-Windows-Shell-Setup"
 )
 
-func PossibleValuesForComponentName() []string {
+func PossibleValuesForComponentNames() []string {
 	return []string{
-		string(ComponentNameMicrosoftNegativeWindowsNegativeShellNegativeSetup),
+		string(ComponentNamesMicrosoftNegativeWindowsNegativeShellNegativeSetup),
 	}
 }
 
-func (s *ComponentName) UnmarshalJSON(bytes []byte) error {
+func (s *ComponentNames) UnmarshalJSON(bytes []byte) error {
 	var decoded string
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
 		return fmt.Errorf("unmarshaling: %+v", err)
 	}
-	out, err := parseComponentName(decoded)
+	out, err := parseComponentNames(decoded)
 	if err != nil {
 		return fmt.Errorf("parsing %q: %+v", decoded, err)
 	}
@@ -122,16 +122,16 @@ func (s *ComponentName) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func parseComponentName(input string) (*ComponentName, error) {
-	vals := map[string]ComponentName{
-		"microsoft-windows-shell-setup": ComponentNameMicrosoftNegativeWindowsNegativeShellNegativeSetup,
+func parseComponentNames(input string) (*ComponentNames, error) {
+	vals := map[string]ComponentNames{
+		"microsoft-windows-shell-setup": ComponentNamesMicrosoftNegativeWindowsNegativeShellNegativeSetup,
 	}
 	if v, ok := vals[strings.ToLower(input)]; ok {
 		return &v, nil
 	}
 
 	// otherwise presume it's an undefined value and best-effort it
-	out := ComponentName(input)
+	out := ComponentNames(input)
 	return &out, nil
 }
 
@@ -255,47 +255,6 @@ func parseDiffDiskPlacement(input string) (*DiffDiskPlacement, error) {
 
 	// otherwise presume it's an undefined value and best-effort it
 	out := DiffDiskPlacement(input)
-	return &out, nil
-}
-
-type DiskControllerTypes string
-
-const (
-	DiskControllerTypesNVMe DiskControllerTypes = "NVMe"
-	DiskControllerTypesSCSI DiskControllerTypes = "SCSI"
-)
-
-func PossibleValuesForDiskControllerTypes() []string {
-	return []string{
-		string(DiskControllerTypesNVMe),
-		string(DiskControllerTypesSCSI),
-	}
-}
-
-func (s *DiskControllerTypes) UnmarshalJSON(bytes []byte) error {
-	var decoded string
-	if err := json.Unmarshal(bytes, &decoded); err != nil {
-		return fmt.Errorf("unmarshaling: %+v", err)
-	}
-	out, err := parseDiskControllerTypes(decoded)
-	if err != nil {
-		return fmt.Errorf("parsing %q: %+v", decoded, err)
-	}
-	*s = *out
-	return nil
-}
-
-func parseDiskControllerTypes(input string) (*DiskControllerTypes, error) {
-	vals := map[string]DiskControllerTypes{
-		"nvme": DiskControllerTypesNVMe,
-		"scsi": DiskControllerTypesSCSI,
-	}
-	if v, ok := vals[strings.ToLower(input)]; ok {
-		return &v, nil
-	}
-
-	// otherwise presume it's an undefined value and best-effort it
-	out := DiskControllerTypes(input)
 	return &out, nil
 }
 
@@ -1070,24 +1029,24 @@ func parseOrchestrationServiceStateAction(input string) (*OrchestrationServiceSt
 	return &out, nil
 }
 
-type PassName string
+type PassNames string
 
 const (
-	PassNameOobeSystem PassName = "OobeSystem"
+	PassNamesOobeSystem PassNames = "OobeSystem"
 )
 
-func PossibleValuesForPassName() []string {
+func PossibleValuesForPassNames() []string {
 	return []string{
-		string(PassNameOobeSystem),
+		string(PassNamesOobeSystem),
 	}
 }
 
-func (s *PassName) UnmarshalJSON(bytes []byte) error {
+func (s *PassNames) UnmarshalJSON(bytes []byte) error {
 	var decoded string
 	if err := json.Unmarshal(bytes, &decoded); err != nil {
 		return fmt.Errorf("unmarshaling: %+v", err)
 	}
-	out, err := parsePassName(decoded)
+	out, err := parsePassNames(decoded)
 	if err != nil {
 		return fmt.Errorf("parsing %q: %+v", decoded, err)
 	}
@@ -1095,16 +1054,16 @@ func (s *PassName) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func parsePassName(input string) (*PassName, error) {
-	vals := map[string]PassName{
-		"oobesystem": PassNameOobeSystem,
+func parsePassNames(input string) (*PassNames, error) {
+	vals := map[string]PassNames{
+		"oobesystem": PassNamesOobeSystem,
 	}
 	if v, ok := vals[strings.ToLower(input)]; ok {
 		return &v, nil
 	}
 
 	// otherwise presume it's an undefined value and best-effort it
-	out := PassName(input)
+	out := PassNames(input)
 	return &out, nil
 }
 

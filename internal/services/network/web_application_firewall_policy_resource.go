@@ -1028,12 +1028,7 @@ func flattenWebApplicationFirewallPolicyPolicySettings(input *webapplicationfire
 	result["file_upload_limit_in_mb"] = int(pointer.From(input.FileUploadLimitInMb))
 	result["log_scrubbing"] = flattenWebApplicationFirewallPolicyLogScrubbing(input.LogScrubbing)
 	result["request_body_inspect_limit_in_kb"] = pointer.From(input.RequestBodyInspectLimitInKB)
-
-	jsChallengeCookieExpirationInMins := 30 // default value is not returned, https://github.com/Azure/azure-rest-api-specs/issues/36330
-	if v := pointer.From(input.JsChallengeCookieExpirationInMins); v != 0 {
-		jsChallengeCookieExpirationInMins = int(v)
-	}
-	result["js_challenge_cookie_expiration_in_minutes"] = jsChallengeCookieExpirationInMins
+	result["js_challenge_cookie_expiration_in_minutes"] = pointer.From(input.JsChallengeCookieExpirationInMins)
 
 	return []interface{}{result}
 }

@@ -23,12 +23,12 @@ import (
 	"github.com/hashicorp/terraform-provider-azurerm/internal/timeouts"
 )
 
-func resourceApiConnection() *pluginsdk.Resource {
+func resourceConnection() *pluginsdk.Resource {
 	resource := &pluginsdk.Resource{
-		Create: resourceApiConnectionCreate,
-		Read:   resourceApiConnectionRead,
-		Update: resourceApiConnectionUpdate,
-		Delete: resourceApiConnectionDelete,
+		Create: resourceConnectionCreate,
+		Read:   resourceConnectionRead,
+		Update: resourceConnectionUpdate,
+		Delete: resourceConnectionDelete,
 
 		Timeouts: &pluginsdk.ResourceTimeout{
 			Create: pluginsdk.DefaultTimeout(30 * time.Minute),
@@ -85,7 +85,7 @@ func resourceApiConnection() *pluginsdk.Resource {
 	return resource
 }
 
-func resourceApiConnectionCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceConnectionCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*clients.Client).Connections.ConnectionsClient
 	subscriptionId := meta.(*clients.Client).Account.SubscriptionId
 	ctx, cancel := timeouts.ForCreate(meta.(*clients.Client).StopContext, d)
@@ -127,10 +127,10 @@ func resourceApiConnectionCreate(d *schema.ResourceData, meta interface{}) error
 	}
 
 	d.SetId(id.ID())
-	return resourceApiConnectionRead(d, meta)
+	return resourceConnectionRead(d, meta)
 }
 
-func resourceApiConnectionRead(d *schema.ResourceData, meta interface{}) error {
+func resourceConnectionRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*clients.Client).Connections.ConnectionsClient
 	ctx, cancel := timeouts.ForRead(meta.(*clients.Client).StopContext, d)
 	defer cancel()
@@ -177,7 +177,7 @@ func resourceApiConnectionRead(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func resourceApiConnectionUpdate(d *schema.ResourceData, meta interface{}) error {
+func resourceConnectionUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*clients.Client).Connections.ConnectionsClient
 	ctx, cancel := timeouts.ForUpdate(meta.(*clients.Client).StopContext, d)
 	defer cancel()
@@ -221,10 +221,10 @@ func resourceApiConnectionUpdate(d *schema.ResourceData, meta interface{}) error
 		return fmt.Errorf("updating %s: %+v", *id, err)
 	}
 
-	return resourceApiConnectionRead(d, meta)
+	return resourceConnectionRead(d, meta)
 }
 
-func resourceApiConnectionDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceConnectionDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*clients.Client).Connections.ConnectionsClient
 	ctx, cancel := timeouts.ForDelete(meta.(*clients.Client).StopContext, d)
 	defer cancel()

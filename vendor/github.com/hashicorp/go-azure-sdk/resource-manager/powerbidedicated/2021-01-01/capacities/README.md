@@ -21,6 +21,27 @@ client.Client.Authorizer = authorizer
 ```
 
 
+### Example Usage: `CapacitiesClient.CheckNameAvailability`
+
+```go
+ctx := context.TODO()
+id := capacities.NewLocationID("12345678-1234-9876-4563-123456789012", "locationName")
+
+payload := capacities.CheckCapacityNameAvailabilityParameters{
+	// ...
+}
+
+
+read, err := client.CheckNameAvailability(ctx, id, payload)
+if err != nil {
+	// handle the error
+}
+if model := read.Model; model != nil {
+	// do something with the model/response object
+}
+```
+
+
 ### Example Usage: `CapacitiesClient.Create`
 
 ```go
@@ -72,13 +93,12 @@ if model := read.Model; model != nil {
 ctx := context.TODO()
 id := commonids.NewSubscriptionID("12345678-1234-9876-4563-123456789012")
 
-// alternatively `client.List(ctx, id)` can be used to do batched pagination
-items, err := client.ListComplete(ctx, id)
+read, err := client.List(ctx, id)
 if err != nil {
 	// handle the error
 }
-for _, item := range items {
-	// do something
+if model := read.Model; model != nil {
+	// do something with the model/response object
 }
 ```
 
@@ -89,13 +109,12 @@ for _, item := range items {
 ctx := context.TODO()
 id := commonids.NewResourceGroupID("12345678-1234-9876-4563-123456789012", "example-resource-group")
 
-// alternatively `client.ListByResourceGroup(ctx, id)` can be used to do batched pagination
-items, err := client.ListByResourceGroupComplete(ctx, id)
+read, err := client.ListByResourceGroup(ctx, id)
 if err != nil {
 	// handle the error
 }
-for _, item := range items {
-	// do something
+if model := read.Model; model != nil {
+	// do something with the model/response object
 }
 ```
 

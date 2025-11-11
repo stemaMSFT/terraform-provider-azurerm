@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hashicorp/go-azure-helpers/lang/pointer"
 	"github.com/hashicorp/go-azure-helpers/lang/response"
 	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonids"
 	"github.com/hashicorp/go-azure-helpers/resourcemanager/commonschema"
@@ -51,11 +50,6 @@ func dataSourceKubernetesClusterNodePool() *pluginsdk.Resource {
 			},
 
 			"eviction_policy": {
-				Type:     pluginsdk.TypeString,
-				Computed: true,
-			},
-
-			"gpu_driver": {
 				Type:     pluginsdk.TypeString,
 				Computed: true,
 			},
@@ -213,12 +207,6 @@ func dataSourceKubernetesClusterNodePoolRead(d *pluginsdk.ResourceData, meta int
 			evictionPolicy = string(*props.ScaleSetEvictionPolicy)
 		}
 		d.Set("eviction_policy", evictionPolicy)
-
-		gpuDriver := ""
-		if props.GpuProfile != nil {
-			gpuDriver = string(pointer.From(props.GpuProfile.Driver))
-		}
-		d.Set("gpu_driver", gpuDriver)
 
 		maxCount := 0
 		if props.MaxCount != nil {

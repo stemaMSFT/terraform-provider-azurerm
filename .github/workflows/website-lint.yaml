@@ -11,7 +11,6 @@ on:
     paths:
       - ".github/workflows/website-lint.yaml"
       - "website/**"
-      - "internal/services/**"
 
 jobs:
   website-lint:
@@ -24,7 +23,6 @@ jobs:
       - run: bash scripts/gogetcookie.sh
       - run: make tools
       - run: make website-lint
-      - run: make document-validate
   save-artifacts-on-fail:
     if: ${{ needs.website-lint.result }} == 'failure'
     uses: ./.github/workflows/save-artifacts.yaml

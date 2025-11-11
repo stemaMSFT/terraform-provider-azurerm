@@ -18,7 +18,6 @@ import (
 	"github.com/hashicorp/go-azure-sdk/resource-manager/sql/2023-08-01-preview/managedinstances"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/sql/2023-08-01-preview/managedinstancevulnerabilityassessments"
 	"github.com/hashicorp/go-azure-sdk/resource-manager/sql/2023-08-01-preview/managedserversecurityalertpolicies"
-	"github.com/hashicorp/go-azure-sdk/resource-manager/sql/2023-08-01-preview/startstopmanagedinstanceschedules"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/common"
 )
 
@@ -34,7 +33,6 @@ type Client struct {
 	ManagedInstanceEncryptionProtectorClient         *managedinstanceencryptionprotectors.ManagedInstanceEncryptionProtectorsClient
 	ManagedInstanceFailoverGroupsClient              *instancefailovergroups.InstanceFailoverGroupsClient
 	ManagedInstanceKeysClient                        *managedinstancekeys.ManagedInstanceKeysClient
-	ManagedInstanceStartStopSchedulesClient          *startstopmanagedinstanceschedules.StartStopManagedInstanceSchedulesClient
 
 	options *common.ClientOptions
 }
@@ -106,12 +104,6 @@ func NewClient(o *common.ClientOptions) (*Client, error) {
 	}
 	o.Configure(managedInstanceServerSecurityAlertPoliciesClient.Client, o.Authorizers.ResourceManager)
 
-	managedInstanceStartStopSchedulesClient, err := startstopmanagedinstanceschedules.NewStartStopManagedInstanceSchedulesClientWithBaseURI(o.Environment.ResourceManager)
-	if err != nil {
-		return nil, fmt.Errorf("building Managed Instance Start Stop Schedules Client: %+v", err)
-	}
-	o.Configure(managedInstanceStartStopSchedulesClient.Client, o.Authorizers.ResourceManager)
-
 	return &Client{
 		ManagedDatabasesClient:                           managedDatabasesClient,
 		ManagedInstanceAdministratorsClient:              managedInstancesAdministratorsClient,
@@ -124,7 +116,6 @@ func NewClient(o *common.ClientOptions) (*Client, error) {
 		ManagedInstancesShortTermRetentionPoliciesClient: managedInstancesShortTermRetentionPoliciesClient,
 		ManagedInstanceVulnerabilityAssessmentsClient:    managedInstanceVulnerabilityAssessmentsClient,
 		ManagedInstancesClient:                           managedInstancesClient,
-		ManagedInstanceStartStopSchedulesClient:          managedInstanceStartStopSchedulesClient,
 
 		options: o,
 	}, nil

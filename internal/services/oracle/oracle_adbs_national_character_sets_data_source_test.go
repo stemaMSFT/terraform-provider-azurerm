@@ -1,5 +1,4 @@
-// Copyright (c) HashiCorp, Inc.
-// SPDX-License-Identifier: MPL-2.0
+// Copyright © 2024, Oracle and/or its affiliates. All rights reserved
 
 package oracle_test
 

@@ -54,11 +54,10 @@ func resourceImage() *pluginsdk.Resource {
 			"resource_group_name": commonschema.ResourceGroupName(),
 
 			"zone_resilient": {
-				Type:          pluginsdk.TypeBool,
-				Optional:      true,
-				Default:       false,
-				ForceNew:      true,
-				ConflictsWith: []string{"source_virtual_machine_id"},
+				Type:     pluginsdk.TypeBool,
+				Optional: true,
+				Default:  false,
+				ForceNew: true,
 			},
 
 			"hyper_v_generation": {
@@ -79,11 +78,10 @@ func resourceImage() *pluginsdk.Resource {
 			},
 
 			"os_disk": {
-				Type:          pluginsdk.TypeList,
-				Optional:      true,
-				MaxItems:      1,
-				ForceNew:      true,
-				ConflictsWith: []string{"source_virtual_machine_id"},
+				Type:     pluginsdk.TypeList,
+				Optional: true,
+				MaxItems: 1,
+				ForceNew: true,
 				Elem: &pluginsdk.Resource{
 					Schema: map[string]*pluginsdk.Schema{
 						"os_type": {
@@ -158,9 +156,8 @@ func resourceImage() *pluginsdk.Resource {
 			},
 
 			"data_disk": {
-				Type:          pluginsdk.TypeList,
-				Optional:      true,
-				ConflictsWith: []string{"source_virtual_machine_id"},
+				Type:     pluginsdk.TypeList,
+				Optional: true,
 				Elem: &pluginsdk.Resource{
 					Schema: map[string]*pluginsdk.Schema{
 						"lun": {

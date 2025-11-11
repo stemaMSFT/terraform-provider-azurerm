@@ -6,8 +6,8 @@ package helpers_test
 import (
 	"testing"
 
-	"github.com/hashicorp/go-azure-helpers/lang/pointer"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/services/appservice/helpers"
+	"github.com/hashicorp/terraform-provider-azurerm/utils"
 )
 
 func TestPlanIsConsumption(t *testing.T) {
@@ -16,19 +16,19 @@ func TestPlanIsConsumption(t *testing.T) {
 		isConsumption bool
 	}{
 		{
-			name:          pointer.To(""),
+			name:          utils.String(""),
 			isConsumption: false,
 		},
 		{
-			name:          pointer.To("Y1"),
+			name:          utils.String("Y1"),
 			isConsumption: true,
 		},
 		{
-			name:          pointer.To("EP1"),
+			name:          utils.String("EP1"),
 			isConsumption: false,
 		},
 		{
-			name:          pointer.To("S1"),
+			name:          utils.String("S1"),
 			isConsumption: false,
 		},
 	}
@@ -46,19 +46,19 @@ func TestPlanIsElastic(t *testing.T) {
 		isElastic bool
 	}{
 		{
-			name:      pointer.To(""),
+			name:      utils.String(""),
 			isElastic: false,
 		},
 		{
-			name:      pointer.To("Y1"),
+			name:      utils.String("Y1"),
 			isElastic: false,
 		},
 		{
-			name:      pointer.To("EP1"),
+			name:      utils.String("EP1"),
 			isElastic: true,
 		},
 		{
-			name:      pointer.To("S1"),
+			name:      utils.String("S1"),
 			isElastic: false,
 		},
 	}
@@ -76,27 +76,27 @@ func TestPlanIsIsolated(t *testing.T) {
 		isIsolated bool
 	}{
 		{
-			name:       pointer.To(""),
+			name:       utils.String(""),
 			isIsolated: false,
 		},
 		{
-			name:       pointer.To("Y1"),
+			name:       utils.String("Y1"),
 			isIsolated: false,
 		},
 		{
-			name:       pointer.To("EP1"),
+			name:       utils.String("EP1"),
 			isIsolated: false,
 		},
 		{
-			name:       pointer.To("S1"),
+			name:       utils.String("S1"),
 			isIsolated: false,
 		},
 		{
-			name:       pointer.To("I1"),
+			name:       utils.String("I1"),
 			isIsolated: true,
 		},
 		{
-			name:       pointer.To("I1v2"),
+			name:       utils.String("I1v2"),
 			isIsolated: true,
 		},
 	}
@@ -114,35 +114,35 @@ func TestPlanIsAppPlan(t *testing.T) {
 		isAppPlan bool
 	}{
 		{
-			name:      pointer.To(""),
+			name:      utils.String(""),
 			isAppPlan: false,
 		},
 		{
-			name:      pointer.To("Y1"),
+			name:      utils.String("Y1"),
 			isAppPlan: false,
 		},
 		{
-			name:      pointer.To("EP1"),
+			name:      utils.String("EP1"),
 			isAppPlan: false,
 		},
 		{
-			name:      pointer.To("B1"),
+			name:      utils.String("B1"),
 			isAppPlan: true,
 		},
 		{
-			name:      pointer.To("S1"),
+			name:      utils.String("S1"),
 			isAppPlan: true,
 		},
 		{
-			name:      pointer.To("P1v3"),
+			name:      utils.String("P1v3"),
+			isAppPlan: true,
+		},
+		{
+			name:      utils.String("I1"),
 			isAppPlan: false,
 		},
 		{
-			name:      pointer.To("I1"),
-			isAppPlan: false,
-		},
-		{
-			name:      pointer.To("I1v2"),
+			name:      utils.String("I1v2"),
 			isAppPlan: false,
 		},
 	}
@@ -181,7 +181,7 @@ func TestPlanTypeFromSku(t *testing.T) {
 		},
 		{
 			name:     "P1v3",
-			expected: "premium",
+			expected: "app",
 		},
 		{
 			name:     "I1",

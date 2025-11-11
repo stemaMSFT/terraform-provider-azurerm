@@ -5,7 +5,6 @@ package fwserver
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 
@@ -21,16 +20,15 @@ import (
 // UpdateResourceRequest is the framework server request for an update request
 // with the ApplyResourceChange RPC.
 type UpdateResourceRequest struct {
-	Config           *tfsdk.Config
-	PlannedPrivate   *privatestate.Data
-	PlannedState     *tfsdk.Plan
-	PlannedIdentity  *tfsdk.ResourceIdentity
-	PriorState       *tfsdk.State
-	ProviderMeta     *tfsdk.Config
-	ResourceSchema   fwschema.Schema
-	IdentitySchema   fwschema.Schema
-	Resource         resource.Resource
-	ResourceBehavior resource.ResourceBehavior
+	Config          *tfsdk.Config
+	PlannedPrivate  *privatestate.Data
+	PlannedState    *tfsdk.Plan
+	PlannedIdentity *tfsdk.ResourceIdentity
+	PriorState      *tfsdk.State
+	ProviderMeta    *tfsdk.Config
+	ResourceSchema  fwschema.Schema
+	IdentitySchema  fwschema.Schema
+	Resource        resource.Resource
 }
 
 // UpdateResourceResponse is the framework server response for an update request
@@ -124,6 +122,7 @@ func (s *Server) UpdateResource(ctx context.Context, req *UpdateResourceRequest,
 	}
 
 	// If the resource supports identity and there is no planned identity data, pre-populate with a null value.
+	// TODO:ResourceIdentity: This logic is likely useless since plan should already handle this, probably should remove.
 	if req.PlannedIdentity == nil && req.IdentitySchema != nil {
 		nullIdentityTfValue := tftypes.NewValue(req.IdentitySchema.Type().TerraformType(ctx), nil)
 
@@ -174,29 +173,14 @@ func (s *Server) UpdateResource(ctx context.Context, req *UpdateResourceRequest,
 		return
 	}
 
-	if resp.NewIdentity != nil {
-		if req.IdentitySchema == nil {
-			resp.Diagnostics.AddError(
-				"Unexpected Update Response",
-				"An unexpected error was encountered when creating the apply response. New identity data was returned by the provider update operation, but the resource does not indicate identity support.\n\n"+
-					"This is always a problem with the provider and should be reported to the provider developer.",
-			)
+	if resp.NewIdentity != nil && req.IdentitySchema == nil {
+		resp.Diagnostics.AddError(
+			"Unexpected Update Response",
+			"An unexpected error was encountered when creating the apply response. New identity data was returned by the provider update operation, but the resource does not indicate identity support.\n\n"+
+				"This is always a problem with the provider and should be reported to the provider developer.",
+		)
 
-			return
-		}
-
-		// If we already have an identity stored, validate that the new identity hasn't changing
-		if !req.ResourceBehavior.MutableIdentity && !req.PlannedIdentity.Raw.IsNull() && !req.PlannedIdentity.Raw.Equal(resp.NewIdentity.Raw) {
-			resp.Diagnostics.AddError(
-				"Unexpected Identity Change",
-				"During the update operation, the Terraform Provider unexpectedly returned a different identity then the previously stored one.\n\n"+
-					"This is always a problem with the provider and should be reported to the provider developer.\n\n"+
-					fmt.Sprintf("Planned Identity: %s\n\n", req.PlannedIdentity.Raw.String())+
-					fmt.Sprintf("New Identity: %s", resp.NewIdentity.Raw.String()),
-			)
-
-			return
-		}
+		return
 	}
 
 	semanticEqualityReq := SchemaSemanticEqualityRequest{

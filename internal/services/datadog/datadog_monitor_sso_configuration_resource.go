@@ -15,9 +15,11 @@ import (
 	"github.com/hashicorp/terraform-provider-azurerm/helpers/tf"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/clients"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/features"
+	"github.com/hashicorp/terraform-provider-azurerm/internal/services/datadog/validate"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/tf/pluginsdk"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/tf/validation"
 	"github.com/hashicorp/terraform-provider-azurerm/internal/timeouts"
+	"github.com/hashicorp/terraform-provider-azurerm/utils"
 )
 
 // @tombuildsstuff: in 4.0 consider inlining this within the `azurerm_datadog_monitors` resource
@@ -59,7 +61,7 @@ func resourceDatadogSingleSignOnConfigurations() *pluginsdk.Resource {
 			"enterprise_application_id": {
 				Type:         pluginsdk.TypeString,
 				Required:     true,
-				ValidateFunc: validation.IsUUID,
+				ValidateFunc: validate.DatadogEnterpriseApplicationID,
 			},
 
 			"single_sign_on": {
@@ -221,7 +223,7 @@ func resourceDatadogSingleSignOnConfigurationsDelete(d *pluginsdk.ResourceData, 
 	payload := singlesignon.DatadogSingleSignOnResource{
 		Properties: &singlesignon.DatadogSingleSignOnProperties{
 			SingleSignOnState: pointer.To(singlesignon.SingleSignOnStatesDisable),
-			EnterpriseAppId:   pointer.To(""),
+			EnterpriseAppId:   utils.String(""),
 		},
 	}
 
